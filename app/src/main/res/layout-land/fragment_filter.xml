@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_margin="16dp"
+                    android:layout_gravity="start|center_vertical"
+                    android:text="@string/please_select_your_preferences"
+                    />
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/find_me_a_car"
+                    app:backgroundTint="@color/colorAccent"
+                    android:layout_gravity="end|center_vertical"
+                    style="@style/Button"
+                    android:layout_margin="16dp"
+                    />
+
+        </FrameLayout>
+
+
+        <include
+                android:id="@+id/manufacturerLayout"
+                layout="@layout/layout_filter_button"
+                />
+
+        <include
+                android:id="@+id/modelLayout"
+                layout="@layout/layout_filter_button"/>
+
+        <include
+                android:id="@+id/yearLayout"
+                layout="@layout/layout_filter_button"/>
+
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Cars</string>
+    <string name="please_select_your_preferences">Please, select your preferences</string>
+    <string name="find_me_a_car">Find me a car</string>
+    <string name="manufacturer">Manufacturer</string>
+</resources>
