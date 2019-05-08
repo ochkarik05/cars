@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.shineapp.cars.R
 import com.shineapp.cars.data.model.Data
+import com.shineapp.cars.system.Lg
 import java.lang.IllegalArgumentException
 
 const val VIEW_TYPE_ODD = 0
@@ -26,24 +27,31 @@ class ListAdapter: PagedListAdapter<Data, DataViewHolder>(DATA_COMPARATOR) {
         }
     }
 
-    var selectedItemId: String? = null
+    var selectedItemPosition: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
 
         val layoutId = when(viewType){
             VIEW_TYPE_EVEN -> R.layout.item_text_even
             VIEW_TYPE_ODD -> R.layout.item_text_odd
-
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
 
         return DataViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
-
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
+
+        val selectedItemId = selectedItemPosition?.let {
+            getItem(it)!!.id
+        }
+
         holder.bind(getItem(position)!!, selectedItemId){
-           selectedItemId = it
+            selectedItemPosition?.let {
+                notifyItemChanged(it)
+            }
+            selectedItemPosition = it
+            notifyItemChanged(position)
         }
     }
 
@@ -52,17 +60,19 @@ class ListAdapter: PagedListAdapter<Data, DataViewHolder>(DATA_COMPARATOR) {
     }
 }
 
-class DataViewHolder(val view: View): RecyclerView.ViewHolder(view){
+open class DataViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
-    fun bind(data: Data, selectedItemId: String?, onClick: (String) -> Unit){
+    fun bind(data: Data, selectedItemId: String?, onClick: (Int) -> Unit){
 
         view.findViewById<TextView>(R.id.text).text = data.value
 
         view.setOnClickListener {
-            onClick(data.id)
+            onClick(adapterPosition)
         }
 
         view.isSelected = selectedItemId == data.id
     }
 
 }
+
+class DataViewHolder2(view: View): DataViewHolder(view)
