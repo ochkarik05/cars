@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.musichin.reactivelivedata.combineLatestWith
 import com.shineapp.cars.R
 import com.shineapp.cars.data.Lce
 import com.shineapp.cars.di.viewmodel.ViewModelFactory
@@ -30,11 +31,11 @@ class PagedListFragment : DaggerFragment() {
     }
 
     private val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
-    private val adapter: ListAdapter by lazy{
+    private val adapter: ListAdapter by lazy {
 
-        ListAdapter{ data ->
+        ListAdapter { data ->
 
-            val func = when(listType){
+            val func = when (listType) {
                 ListType.MANUFACTURER -> activityViewModel::setManufacturer
                 ListType.MODEL -> activityViewModel::setModel
                 ListType.YEAR -> activityViewModel::setYear
@@ -45,7 +46,7 @@ class PagedListFragment : DaggerFragment() {
                 findNavController().popBackStack()
             }, 300)
         }.apply {
-            selectedItem = when(listType){
+            selectedItem = when (listType) {
                 ListType.MANUFACTURER -> manufacturer
                 ListType.MODEL -> model
                 ListType.YEAR -> year
@@ -71,14 +72,20 @@ class PagedListFragment : DaggerFragment() {
                 adapter.submitList(it)
             }
 
-            observe(refreshState){
-                progress.isVisible = it is Lce.Loading
+            observe(refreshState) {
+                progress.isVisible = it !is Lce.Data
             }
+
+            observe(networkState) { network ->
+                val showNetworkState = network is Lce.Loading && progress.isVisible.not()
+                linearProgressBar.isVisible = showNetworkState
+            }
+
         }
     }
 
     private fun initRecyclerView(view: View) {
-        view.findViewById<RecyclerView>(R.id.recyclerView).apply{
+        view.findViewById<RecyclerView>(R.id.recyclerView).apply {
             adapter = this@PagedListFragment.adapter
             layoutManager = LinearLayoutManager(context!!)
         }

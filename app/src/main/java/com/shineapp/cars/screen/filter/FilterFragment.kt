@@ -25,7 +25,7 @@ class FilterFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
+    private val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
         viewModelFactory
     }
 
