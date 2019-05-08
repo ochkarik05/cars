@@ -64,6 +64,7 @@ class FilterFragment : DaggerFragment() {
 
             observe(yearLiveData) {
                 setText(view.yearLayout, it)
+                view.submit.isEnabled = it.isNotEmpty()
             }
 
         }
