@@ -29,6 +29,21 @@
                 android:name="listType"
                 app:argType="com.shineapp.cars.screen.list.ListType"
                 android:defaultValue="MANUFACTURER"/>
+        <argument
+                android:name="manufacturer"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="null"/>
+        <argument
+                android:name="model"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="null"/>
+        <argument
+                android:name="year"
+                app:argType="string"
+                app:nullable="true"
+                android:defaultValue="null"/>
     </fragment>
 
 

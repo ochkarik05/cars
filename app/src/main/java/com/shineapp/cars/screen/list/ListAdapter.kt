@@ -15,7 +15,7 @@ import java.lang.IllegalArgumentException
 const val VIEW_TYPE_ODD = 0
 const val VIEW_TYPE_EVEN = 1
 
-class ListAdapter: PagedListAdapter<Data, DataViewHolder>(DATA_COMPARATOR) {
+class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataViewHolder>(DATA_COMPARATOR) {
 
     companion object {
           val DATA_COMPARATOR = object : DiffUtil.ItemCallback<Data>() {

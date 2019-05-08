@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProviders
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
-import com.shineapp.cars.MainActivity
 import com.shineapp.cars.R
+import com.shineapp.cars.data.model.Data
 import com.shineapp.cars.di.viewmodel.ViewModelFactory
 import com.shineapp.cars.screen.ActivityViewModel
+import com.shineapp.cars.screen.EMPTY_DATA
 import com.shineapp.cars.screen.list.ListType
 import com.shineapp.cars.system.Lg
 import com.shineapp.cars.system.lazyActivityViewModel
+import com.shineapp.cars.system.observe
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_filter.view.*
 import javax.inject.Inject
@@ -48,6 +50,25 @@ class FilterFragment : DaggerFragment() {
             "activityViewModel: $activityViewModel"
         }
 
+        with(activityViewModel){
+
+            observe(manufacturerLiveData){
+                view.modelLayout.isEnabled = it.isNotEmpty()
+                setText(view.manufacturerLayout, it)
+            }
+
+            observe(modelLiveData){
+                view.yearLayout.isEnabled = it.isNotEmpty()
+                setText(view.modelLayout, it)
+            }
+
+            observe(modelLiveData){
+                view.yearLayout.isEnabled = it.isNotEmpty()
+                setText(view.yearLayout, it)
+            }
+
+        }
+
     }
 
     private fun initManufacturer(view: View) {
@@ -68,7 +89,11 @@ class FilterFragment : DaggerFragment() {
         val hint = layout.findViewById<TextView>(R.id.hint)
         hint.setText(hintId)
         layout.setOnClickListener {
-            navTo(FilterFragmentDirections.actionShowList().setListType(listType))
+            navTo(
+                FilterFragmentDirections
+                .actionShowList()
+                .setListType(listType)
+            )
         }
     }
 
@@ -77,5 +102,13 @@ class FilterFragment : DaggerFragment() {
         val hintId = R.string.year
         initLayout(layout, hintId, ListType.YEAR)
     }
+
+    fun setText(layout: View, data: Data){
+        val textView = layout.findViewById<TextView>(R.id.text)
+        textView.isVisible = data.isNotEmpty()
+        textView.text = data.value
+    }
 }
+
+private fun Data.isNotEmpty(): Boolean = this != EMPTY_DATA
 
