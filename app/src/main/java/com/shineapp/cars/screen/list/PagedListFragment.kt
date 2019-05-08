@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.shineapp.cars.MainActivity
 import com.shineapp.cars.R
 import com.shineapp.cars.di.viewmodel.ViewModelFactory
 import com.shineapp.cars.di.viewmodel.ViewModelKey
-import com.shineapp.cars.system.Lg
-import com.shineapp.cars.system.argumentDelegate
-import com.shineapp.cars.system.lazyViewModel
-import com.shineapp.cars.system.observe
+import com.shineapp.cars.screen.ActivityViewModel
+import com.shineapp.cars.system.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -29,6 +29,9 @@ class PagedListFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
+        viewModelFactory
+    }
 
     val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
 
@@ -44,8 +47,8 @@ class PagedListFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        Lg.i {
-            "listType: $listType"
+        Lg.i{
+            "activityViewModel: ${activityViewModel.hashCode()}, $activityViewModel"
         }
 
         initRecyclerView(view)

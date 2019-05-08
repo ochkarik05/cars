@@ -2,14 +2,20 @@ package com.shineapp.cars.system
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.*
 
 inline fun <reified VM : ViewModel> LifecycleOwner.lazyViewModel(
     crossinline factory: () -> ViewModelProvider.Factory
 ) = lazy { getViewModel<VM>(factory()) }
+
+
+inline fun <reified VM: ViewModel> Fragment.lazyActivityViewModel(
+    crossinline factory: () -> ViewModelProvider.Factory
+) = lazy {
+    ViewModelProviders.of(activity!!, factory()).get(VM::class.java)
+//    activity!!.getViewModel<VM>(factory())
+}
+
 
 inline fun <reified T : ViewModel> LifecycleOwner.withViewModel(
     factory: ViewModelProvider.Factory,
@@ -19,6 +25,7 @@ inline fun <reified T : ViewModel> LifecycleOwner.withViewModel(
     vm.body()
     return vm
 }
+
 
 inline fun <reified VM : ViewModel> LifecycleOwner.getViewModel(
     factory: ViewModelProvider.Factory? = null
