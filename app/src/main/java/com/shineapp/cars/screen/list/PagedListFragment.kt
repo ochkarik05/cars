@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.shineapp.cars.R
 import com.shineapp.cars.di.viewmodel.ViewModelFactory
 import com.shineapp.cars.di.viewmodel.ViewModelKey
+import com.shineapp.cars.system.Lg
+import com.shineapp.cars.system.argumentDelegate
 import com.shineapp.cars.system.lazyViewModel
 import com.shineapp.cars.system.observe
 import dagger.Binds
@@ -30,11 +32,18 @@ class PagedListFragment: DaggerFragment() {
 
     var adapter: ListAdapter = ListAdapter()
 
+    val listType: ListType by argumentDelegate()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_paged_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        Lg.i{
+            "listType: $listType"
+        }
+
         initRecyclerView(view)
         with(viewModel){
             observe(list){

@@ -24,7 +24,12 @@
     <fragment
         android:id="@+id/pagedListFragment"
         tools:layout="@layout/fragment_paged_list"
-        android:name="com.shineapp.cars.screen.list.PagedListFragment"/>
+        android:name="com.shineapp.cars.screen.list.PagedListFragment">
+        <argument
+                android:name="listType"
+                app:argType="com.shineapp.cars.screen.list.ListType"
+                android:defaultValue="MANUFACTURER"/>
+    </fragment>
 
 
 </navigation>

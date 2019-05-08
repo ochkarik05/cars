@@ -34,6 +34,13 @@ class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsReposit
         )
     }
 
+    override fun getModels(): Listing<Data> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getYears(): Listing<Data> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 class ManufacturerSource(carsApi: CarsApi): PagedDataSource<Data, Int>(
