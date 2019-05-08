@@ -1,5 +1,7 @@
 package com.shineapp.cars
 
+import android.content.Context
+import androidx.multidex.MultiDex
 import com.github.ajalt.timberkt.Timber
 import com.halfhp.rxtracer.RxTracer
 import com.shineapp.cars.di.AppComponent
@@ -31,5 +33,11 @@ class App : DaggerApplication() {
 
         RxTracer.setMode(RxTracer.Mode.APPEND)
         RxTracer.enable()
+    }
+
+    @Override
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 }

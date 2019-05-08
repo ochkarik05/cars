@@ -7,14 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.navigation.fragment.findNavController
 import com.shineapp.cars.R
+import com.shineapp.cars.di.viewmodel.ViewModelFactory
+import com.shineapp.cars.screen.list.ListViewModel
 import com.shineapp.cars.system.hasKitKat
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import com.shineapp.cars.system.lazyViewModel
+import com.shineapp.cars.system.observe
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_filter.view.*
+import javax.inject.Inject
 
 class FilterFragment : DaggerFragment() {
+
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_filter, container, false)
@@ -30,19 +36,31 @@ class FilterFragment : DaggerFragment() {
             txt.isVisible = !txt.isVisible
         }
 
-        view.manufacturerLayout.setOnClickListener(listener)
-        view.modelLayout.setOnClickListener(listener)
-        view.yearLayout.setOnClickListener(listener)
+        initManufacturer(view)
+        initModel(view, listener)
+        initYear(view, listener)
+
 
     }
+    private fun initManufacturer(view: View) {
+        view.manufacturerLayout.setOnClickListener{
+            navTo(R.id.actionShowList)
+        }
+    }
 
-}
+    private fun navTo(actionId: Int) {
 
-@Module
-interface FilterModule {
 
-    @ContributesAndroidInjector
-    fun contributesModule(): FilterFragment
+        findNavController().navigate(actionId)
+    }
+
+    private fun initModel(view: View, listener: (View) -> Unit) {
+        view.modelLayout.setOnClickListener(listener)
+    }
+
+    private fun initYear(view: View, listener: (View) -> Unit) {
+        view.yearLayout.setOnClickListener(listener)
+    }
 
 }
 

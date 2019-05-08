@@ -13,6 +13,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
+        buildConfigField "String", "SERVER_URL", "\"http://api-aws-eu-qa-1.auto1-test.com/\""
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -42,11 +44,27 @@ dependencies {
 
     implementation 'com.github.ajalt:timberkt:1.5.1'
 
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-reactivestreams-ktx:2.0.0'
+
+
+    implementation 'com.github.musichin.reactivelivedata:reactivelivedata:0.21.0'
+
+    def paging_version = "2.1.0"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version" // For Kotlin use paging-runtime-ktx
+    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version" // For Kotlin use paging-rxjava2-ktx
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'com.halfhp.rxtracer:rxtracer:0.1.2'
+
+    implementation 'com.android.support:multidex:1.0.3'
+
+
+    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0'
 
     def navigation_version = '1.0.0'
     implementation "android.arch.navigation:navigation-fragment-ktx:$navigation_version"
