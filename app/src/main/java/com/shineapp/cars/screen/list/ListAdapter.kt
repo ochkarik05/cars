@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.shineapp.cars.R
 import com.shineapp.cars.data.model.Data
-import java.lang.IllegalArgumentException
 
 const val VIEW_TYPE_ODD = 0
 const val VIEW_TYPE_EVEN = 1
@@ -76,4 +75,3 @@ open class DataViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
 }
 
-class DataViewHolder2(view: View): DataViewHolder(view)

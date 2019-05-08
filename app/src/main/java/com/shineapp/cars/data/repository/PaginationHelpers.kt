@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.*
 import com.shineapp.cars.data.Lce
+import com.shineapp.cars.data.repository.impl.PAGE_SIZE
 import com.shineapp.cars.errors.toAppException
 import com.shineapp.cars.system.AutoDisposable
 import com.shineapp.cars.system.AutoDisposableImpl
@@ -24,7 +25,7 @@ class Response<T>(
     val totalPageCount: Int
 )
 
-open class PagedDataSource<T, M>(
+open class PagedDataSource<T>(
     private val api: (key: Int, pageSize: Int) -> Single<out Response<T>>,
     private val retryExecutor: Executor = Executors.newSingleThreadExecutor()
 ) : PageKeyedDataSource<Int, T>(),
@@ -48,7 +49,7 @@ open class PagedDataSource<T, M>(
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         initialLoad.postValue(Lce.Loading)
 
-        api(DEFAULT_PAGE_VALUE, params.requestedLoadSize)
+        api(DEFAULT_PAGE_VALUE, PAGE_SIZE)
             .subscribe({
                 val prevPage = if (it.page > 0) it.page - 1 else null
                 val nextPage = if (it.page < it.totalPageCount - 1) it.page + 1 else null

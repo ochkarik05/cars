@@ -28,9 +28,7 @@ private fun throwServerErrorIfAny(
     response: Response
 ) {
 
-    val code = response.code()
-
-    when (code) {
+    when (response.code()) {
         in 400..599 -> throw  AppException(ErrorCode.SERVER_ERROR)
     }
 }

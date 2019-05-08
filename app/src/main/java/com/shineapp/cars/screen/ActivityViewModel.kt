@@ -1,16 +1,10 @@
 package com.shineapp.cars.screen
 
-import android.provider.ContactsContract
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.shineapp.cars.data.model.Data
-import com.shineapp.cars.di.viewmodel.ViewModelKey
 import com.shineapp.cars.system.AutoDisposableViewModel
 import com.shineapp.cars.system.mutable
-import dagger.Binds
-import dagger.Module
-import dagger.multibindings.IntoMap
 import javax.inject.Inject
 
 val EMPTY_DATA = Data("", "")
@@ -48,10 +42,3 @@ class ActivityViewModel @Inject constructor(): AutoDisposableViewModel() {
 
 }
 
-@Module
-interface ActivityModelModule {
-    @Binds
-    @IntoMap
-    @ViewModelKey(ActivityViewModel::class)
-    fun bindViewModel(viewModel: ActivityViewModel): ViewModel
-}

@@ -2,13 +2,12 @@ package com.shineapp.cars.data.repository.impl
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
+import com.github.musichin.reactivelivedata.switchMap
 import com.shineapp.cars.data.model.Data
 import com.shineapp.cars.data.repository.*
 import com.shineapp.cars.data.repository.api.CarsApi
-import javax.inject.Inject
-import com.github.musichin.reactivelivedata.switchMap
-import com.github.musichin.reactivelivedata.toLiveData
 import com.shineapp.cars.data.repository.api.toResponse
+import javax.inject.Inject
 
 const val PAGE_SIZE = 15
 class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsRepository {
@@ -16,7 +15,7 @@ class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsReposit
     override fun getManufacturers(): Listing<Data> {
 
         val sourceFactory = CarRequestFactory {
-            PagedDataSource<Data, Int>(
+            PagedDataSource<Data>(
                 api = {key, pageSize ->
                     carsApi.getManufacturers(key, pageSize).map { it.toResponse() }
                 }
@@ -26,7 +25,7 @@ class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsReposit
         return createListing(sourceFactory)
     }
 
-    private fun createListing(sourceFactory: CarRequestFactory<PagedDataSource<Data, Int>>): Listing<Data> {
+    private fun createListing(sourceFactory: CarRequestFactory<PagedDataSource<Data>>): Listing<Data> {
         return Listing(
             PagingListState(
                 sourceFactory.toLiveData(PAGE_SIZE),
@@ -47,7 +46,7 @@ class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsReposit
 
     override fun getModels(manufacturer: String): Listing<Data> {
         val sourceFactory = CarRequestFactory {
-            PagedDataSource<Data, Int>(
+            PagedDataSource<Data>(
                 api = {key, pageSize ->
                     carsApi.getModels(key, pageSize, manufacturer).map { it.toResponse() }
                 }
@@ -59,7 +58,7 @@ class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsReposit
 
     override fun getYears(manufacturer: String, model: String): Listing<Data> {
         val sourceFactory = CarRequestFactory {
-            PagedDataSource<Data, Int>(
+            PagedDataSource<Data>(
                 api = {key, pageSize ->
                     carsApi.getYears(key, pageSize, manufacturer, model).map { it.toResponse() }
                 }

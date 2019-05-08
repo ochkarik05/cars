@@ -13,6 +13,6 @@ class RepositoryModule{
     fun providesCarsRepo(r: CarsRepositoryImpl): CarsRepository = r
 
     @Provides
-    fun providesCarsApi(retrofit: Retrofit) = retrofit.create(CarsApi::class.java)
+    fun providesCarsApi(retrofit: Retrofit): CarsApi = retrofit.create(CarsApi::class.java)
 
 }

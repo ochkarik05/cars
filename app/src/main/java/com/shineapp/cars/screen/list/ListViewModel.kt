@@ -1,13 +1,11 @@
 package com.shineapp.cars.screen.list
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.shineapp.cars.data.Lce
 import com.shineapp.cars.data.model.Data
 import com.shineapp.cars.data.repository.CarsRepository
 import com.shineapp.cars.system.AutoDisposableViewModel
-import com.shineapp.cars.system.mutable
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -19,10 +17,9 @@ class ListViewModel @Inject constructor(
 ): AutoDisposableViewModel(){
 
     val list: LiveData<PagedList<Data>>
+    val networkState: LiveData<Lce<Data>>
+    val refreshState: LiveData<Lce<Int>>
 
-    val networkState: MutableLiveData<Lce<Data>>
-
-    val refreshState: MutableLiveData<Lce<Int>>
     var retry: () -> Unit
     var refresh: () -> Unit
     var onDispose: () -> Unit
@@ -40,9 +37,13 @@ class ListViewModel @Inject constructor(
         refresh = listing.refresh
         list = listing.pageListState.pagedList
         onDispose = listing.dispose
-        networkState = listing.pageListState.networkState.mutable
-        refreshState = listing.pageListState.refreshState.mutable
+        networkState = listing.pageListState.networkState
+        refreshState = listing.pageListState.refreshState
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        onDispose()
+    }
 
 }

@@ -4,39 +4,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.shineapp.cars.MainActivity
 import com.shineapp.cars.R
+import com.shineapp.cars.data.Lce
 import com.shineapp.cars.di.viewmodel.ViewModelFactory
-import com.shineapp.cars.di.viewmodel.ViewModelKey
 import com.shineapp.cars.screen.ActivityViewModel
-import com.shineapp.cars.system.*
-import dagger.Binds
-import dagger.Module
-import dagger.Provides
-import dagger.android.ContributesAndroidInjector
+import com.shineapp.cars.system.argumentDelegate
+import com.shineapp.cars.system.lazyActivityViewModel
+import com.shineapp.cars.system.lazyViewModel
+import com.shineapp.cars.system.observe
 import dagger.android.support.DaggerFragment
-import dagger.multibindings.IntoMap
+import kotlinx.android.synthetic.main.fragment_paged_list.*
 import javax.inject.Inject
-import javax.inject.Named
 
 class PagedListFragment : DaggerFragment() {
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
+    private val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
         viewModelFactory
     }
 
-    val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
-
-    val adapter: ListAdapter by lazy{
+    private val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
+    private val adapter: ListAdapter by lazy{
 
         ListAdapter{ data ->
 
@@ -71,65 +65,24 @@ class PagedListFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        Lg.i{
-            "activityViewModel: ${activityViewModel.hashCode()}, $activityViewModel"
-        }
-
         initRecyclerView(view)
         with(viewModel) {
             observe(list) {
                 adapter.submitList(it)
             }
+
+            observe(refreshState){
+                progress.isVisible = it is Lce.Loading
+            }
         }
     }
 
     private fun initRecyclerView(view: View) {
-
-        val rv: RecyclerView = view.findViewById(R.id.recyclerView)
-
-        rv.adapter = adapter
-
-        rv.layoutManager = LinearLayoutManager(context!!)
-
+        view.findViewById<RecyclerView>(R.id.recyclerView).apply{
+            adapter = this@PagedListFragment.adapter
+            layoutManager = LinearLayoutManager(context!!)
+        }
     }
 
 }
 
-@Module
-interface PagedListModule {
-
-    @ContributesAndroidInjector(
-        modules = [
-            ListViewModelModule::class,
-            PagedListFragmentModule::class
-        ]
-    )
-    fun contributesModule(): PagedListFragment
-
-}
-
-@Module
-class PagedListFragmentModule {
-
-    @Provides
-    fun providesListType(f: PagedListFragment) = f.listType
-
-
-    @Named("manufacturer")
-    @Provides
-    fun providesManufacturer(f: PagedListFragment): String? = f.manufacturer
-
-    @Named("model")
-    @Provides
-    fun providesYear(f: PagedListFragment): String? = f.model
-
-
-}
-
-@Module
-interface ListViewModelModule {
-    @Binds
-    @IntoMap
-    @ViewModelKey(ListViewModel::class)
-    fun bindViewModel(viewModel: ListViewModel): ViewModel
-}

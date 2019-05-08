@@ -14,7 +14,6 @@ import com.shineapp.cars.di.viewmodel.ViewModelFactory
 import com.shineapp.cars.screen.ActivityViewModel
 import com.shineapp.cars.screen.EMPTY_DATA
 import com.shineapp.cars.screen.list.ListType
-import com.shineapp.cars.system.Lg
 import com.shineapp.cars.system.lazyActivityViewModel
 import com.shineapp.cars.system.observe
 import dagger.android.support.DaggerFragment
@@ -30,7 +29,11 @@ class FilterFragment : DaggerFragment() {
         viewModelFactory
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_filter, container, false)
     }
 
@@ -39,16 +42,6 @@ class FilterFragment : DaggerFragment() {
         initManufacturer(view)
         initModel(view)
         initYear(view)
-
-
-        Lg.i {
-            "activityViewModel: ${activityViewModel.hashCode()}"
-        }
-
-
-        Lg.i {
-            "activityViewModel: $activityViewModel"
-        }
 
         with(activityViewModel) {
 
@@ -66,9 +59,7 @@ class FilterFragment : DaggerFragment() {
                 setText(view.yearLayout, it)
                 view.submit.isEnabled = it.isNotEmpty()
             }
-
         }
-
     }
 
     private fun initManufacturer(view: View) {
@@ -77,7 +68,8 @@ class FilterFragment : DaggerFragment() {
         initLayout(layout, hintId, ListType.MANUFACTURER)
     }
 
-    private fun navTo(arguments: FilterFragmentDirections.ActionShowList) = findNavController().navigate(arguments)
+    private fun navTo(arguments: FilterFragmentDirections.ActionShowList)
+            = findNavController().navigate(arguments)
 
     private fun initModel(view: View) {
         val layout = view.modelLayout
@@ -106,7 +98,7 @@ class FilterFragment : DaggerFragment() {
         initLayout(layout, hintId, ListType.YEAR)
     }
 
-    fun setText(layout: View, data: Data) {
+    private fun setText(layout: View, data: Data) {
         val textView = layout.findViewById<TextView>(R.id.text)
         textView.isVisible = data.isNotEmpty()
         textView.text = data.value

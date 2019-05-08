@@ -3,7 +3,6 @@ package com.shineapp.cars.system
 import android.app.Activity
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
