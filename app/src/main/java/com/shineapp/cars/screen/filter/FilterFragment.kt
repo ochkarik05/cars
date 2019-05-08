@@ -50,20 +50,19 @@ class FilterFragment : DaggerFragment() {
             "activityViewModel: $activityViewModel"
         }
 
-        with(activityViewModel){
+        with(activityViewModel) {
 
-            observe(manufacturerLiveData){
+            observe(manufacturerLiveData) {
                 view.modelLayout.isEnabled = it.isNotEmpty()
                 setText(view.manufacturerLayout, it)
             }
 
-            observe(modelLiveData){
+            observe(modelLiveData) {
                 view.yearLayout.isEnabled = it.isNotEmpty()
                 setText(view.modelLayout, it)
             }
 
-            observe(modelLiveData){
-                view.yearLayout.isEnabled = it.isNotEmpty()
+            observe(yearLiveData) {
                 setText(view.yearLayout, it)
             }
 
@@ -91,8 +90,11 @@ class FilterFragment : DaggerFragment() {
         layout.setOnClickListener {
             navTo(
                 FilterFragmentDirections
-                .actionShowList()
-                .setListType(listType)
+                    .actionShowList()
+                    .setManufacturer(activityViewModel.manufacturerLiveData.value?.id)
+                    .setModel(activityViewModel.modelLiveData.value?.id)
+                    .setYear(activityViewModel.yearLiveData.value?.id)
+                    .setListType(listType)
             )
         }
     }
@@ -103,7 +105,7 @@ class FilterFragment : DaggerFragment() {
         initLayout(layout, hintId, ListType.YEAR)
     }
 
-    fun setText(layout: View, data: Data){
+    fun setText(layout: View, data: Data) {
         val textView = layout.findViewById<TextView>(R.id.text)
         textView.isVisible = data.isNotEmpty()
         textView.text = data.value

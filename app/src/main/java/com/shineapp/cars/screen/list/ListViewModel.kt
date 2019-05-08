@@ -15,7 +15,7 @@ class ListViewModel @Inject constructor(
     carsRepository: CarsRepository,
     listType: ListType,
     @Named("manufacturer") manufacturer: String?,
-    @Named("year") year: String?
+    @Named("model") model: String?
 ): AutoDisposableViewModel(){
 
     val list: LiveData<PagedList<Data>>
@@ -33,7 +33,7 @@ class ListViewModel @Inject constructor(
         val listing = when(listType){
             ListType.MANUFACTURER -> carsRepository.getManufacturers()
             ListType.MODEL -> carsRepository.getModels(manufacturer!!)
-            ListType.YEAR -> carsRepository.getYears(manufacturer!!, year!!)
+            ListType.YEAR -> carsRepository.getYears(manufacturer!!, model!!)
         }
 
         retry = listing.retry

@@ -15,15 +15,14 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
-const val DEFAULT_PAGE_VALUE  = 0
+const val DEFAULT_PAGE_VALUE = 0
 
 class Response<T>(
     val data: List<T>,
     val page: Int,
     val pageSize: Int,
-    val totalPageCount:Int
+    val totalPageCount: Int
 )
-
 
 open class PagedDataSource<T, M>(
     private val api: (key: Int, pageSize: Int) -> Single<out Response<T>>,
@@ -33,10 +32,6 @@ open class PagedDataSource<T, M>(
 
     private var retry: (() -> Any)? = null
 
-    /**
-     * There is no sync on the state because paging will always call loadInitial first then wait
-     * for it to return some success value before calling loadAfter.
-     */
     val networkState = MutableLiveData<Lce<T>>()
     val initialLoad = MutableLiveData<Lce<Int>>()
 
@@ -55,17 +50,19 @@ open class PagedDataSource<T, M>(
 
         api(DEFAULT_PAGE_VALUE, params.requestedLoadSize)
             .subscribe({
-            callback.onResult(it.data, it.page - 1, it.page + 1)
-            retry = null
-            initialLoad.postValue(Lce.Data(it.page))
-        }, { t ->
-            retry = {
-                loadInitial(params, callback)
-            }
-            Lg.e(t) { "Load Initial" }
-            initialLoad.postValue(Lce.Error(t.toAppException()))
+                val prevPage = if (it.page > 0) it.page - 1 else null
+                val nextPage = if (it.page < it.totalPageCount - 1) it.page + 1 else null
+                callback.onResult(it.data, prevPage, nextPage)
+                retry = null
+                initialLoad.postValue(Lce.Data(it.page))
+            }, { t ->
+                retry = {
+                    loadInitial(params, callback)
+                }
+                Lg.e(t) { "Load Initial" }
+                initialLoad.postValue(Lce.Error(t.toAppException()))
 
-        }).autoDispose()
+            }).autoDispose()
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
@@ -73,30 +70,32 @@ open class PagedDataSource<T, M>(
         networkState.postValue(Lce.Loading)
         api(params.key, params.requestedLoadSize)
             .subscribe({
-            callback.onResult(it.data, it.page + 1)
-            retry = null
-            networkState.postValue(Lce.Idle)
-        }, { t ->
-            retry = {
-                loadAfter(params, callback)
-            }
-            networkState.postValue(Lce.Error(t.toAppException()))
-            Lg.i(t) { "Load After" }
-        }).autoDispose()
+                val nextPage = if (it.page < it.totalPageCount - 1) it.page + 1 else null
+                callback.onResult(it.data,  nextPage)
+                retry = null
+                networkState.postValue(Lce.Idle)
+            }, { t ->
+                retry = {
+                    loadAfter(params, callback)
+                }
+                networkState.postValue(Lce.Error(t.toAppException()))
+                Lg.i(t) { "Load After" }
+            }).autoDispose()
 
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
         api(params.key, params.requestedLoadSize)
             .subscribe({
-            callback.onResult(it.data, it.page - 1)
-            retry = null
-        }, { t ->
-            retry = {
-                loadBefore(params, callback)
-            }
-            Lg.i(t) { "Load Before" }
-        }).autoDispose()
+                val prevPage = if (it.page > 0) it.page - 1 else null
+                callback.onResult(it.data, prevPage)
+                retry = null
+            }, { t ->
+                retry = {
+                    loadBefore(params, callback)
+                }
+                Lg.i(t) { "Load Before" }
+            }).autoDispose()
     }
 }
 

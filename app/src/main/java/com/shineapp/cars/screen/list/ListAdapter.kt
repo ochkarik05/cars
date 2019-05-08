@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.shineapp.cars.R
 import com.shineapp.cars.data.model.Data
-import com.shineapp.cars.system.Lg
 import java.lang.IllegalArgumentException
 
 const val VIEW_TYPE_ODD = 0
@@ -27,7 +26,7 @@ class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataVi
         }
     }
 
-    var selectedItemPosition: Int? = null
+    var selectedItem: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
 
@@ -40,19 +39,21 @@ class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataVi
         return DataViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
     }
 
+
+    private val onClick: (Int) -> Unit = { clickedPos ->
+
+        val prevSelectedItem = currentList!!.indexOfFirst { it.id == selectedItem }
+        if (prevSelectedItem != -1) {
+            notifyItemChanged(clickedPos)
+        }
+        val item = getItem(clickedPos)
+        selectedItem = item?.id
+        notifyItemChanged(clickedPos)
+        item?.let { onSelected(it) }
+    }
+
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
-
-        val selectedItemId = selectedItemPosition?.let {
-            getItem(it)!!.id
-        }
-
-        holder.bind(getItem(position)!!, selectedItemId){
-            selectedItemPosition?.let {
-                notifyItemChanged(it)
-            }
-            selectedItemPosition = it
-            notifyItemChanged(position)
-        }
+        holder.bind(getItem(position)!!, selectedItem, onClick)
     }
 
     override fun getItemViewType(position: Int): Int {

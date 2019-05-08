@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.shineapp.cars.MainActivity
@@ -35,11 +36,34 @@ class PagedListFragment : DaggerFragment() {
 
     val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
 
-    var adapter: ListAdapter = ListAdapter()
+    val adapter: ListAdapter by lazy{
+
+        ListAdapter{ data ->
+
+            val func = when(listType){
+                ListType.MANUFACTURER -> activityViewModel::setManufacturer
+                ListType.MODEL -> activityViewModel::setModel
+                ListType.YEAR -> activityViewModel::setYear
+            }
+            func(data)
+
+            view?.postDelayed({
+                findNavController().popBackStack()
+            }, 300)
+        }.apply {
+            selectedItem = when(listType){
+                ListType.MANUFACTURER -> manufacturer
+                ListType.MODEL -> model
+                ListType.YEAR -> year
+            }
+        }
+
+    }
 
     val listType: ListType by argumentDelegate()
     val manufacturer: String? by argumentDelegate()
     val year: String? by argumentDelegate()
+    val model: String? by argumentDelegate()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_paged_list, container, false)
@@ -95,9 +119,9 @@ class PagedListFragmentModule {
     @Provides
     fun providesManufacturer(f: PagedListFragment): String? = f.manufacturer
 
-    @Named("year")
+    @Named("model")
     @Provides
-    fun providesYear(f: PagedListFragment): String? = f.year
+    fun providesYear(f: PagedListFragment): String? = f.model
 
 
 }

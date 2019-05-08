@@ -28,7 +28,7 @@ interface CarsApi{
         @Query("page") page: Int,
         @Query("pageSize") pageSize: Int,
         @Query("manufacturer") manufacturer: String,
-        @Query("model") model: String
+        @Query("main-type") model: String
     ): Single<ServerResponse>
 
 
