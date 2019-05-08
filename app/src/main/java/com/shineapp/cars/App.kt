@@ -10,7 +10,7 @@ import dagger.android.support.DaggerApplication
 import io.reactivex.plugins.RxJavaPlugins
 
 class App : DaggerApplication() {
-    lateinit var appComponent: AppComponent
+    private lateinit var appComponent: AppComponent
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> = appComponent
 
