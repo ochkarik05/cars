@@ -9,9 +9,13 @@ import com.shineapp.cars.data.repository.CarsRepository
 import com.shineapp.cars.system.AutoDisposableViewModel
 import com.shineapp.cars.system.mutable
 import javax.inject.Inject
+import javax.inject.Named
 
 class ListViewModel @Inject constructor(
-    val carsRepository: CarsRepository
+    carsRepository: CarsRepository,
+    listType: ListType,
+    @Named("manufacturer") manufacturer: String?,
+    @Named("year") year: String?
 ): AutoDisposableViewModel(){
 
     val list: LiveData<PagedList<Data>>
@@ -26,7 +30,11 @@ class ListViewModel @Inject constructor(
 
     init {
 
-        val listing = carsRepository.getManufacturers()
+        val listing = when(listType){
+            ListType.MANUFACTURER -> carsRepository.getManufacturers()
+            ListType.MODEL -> carsRepository.getModels(manufacturer!!)
+            ListType.YEAR -> carsRepository.getYears(manufacturer!!, year!!)
+        }
 
         retry = listing.retry
         refresh = listing.refresh

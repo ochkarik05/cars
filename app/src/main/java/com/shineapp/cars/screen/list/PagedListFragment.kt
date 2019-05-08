@@ -16,23 +16,27 @@ import com.shineapp.cars.system.lazyViewModel
 import com.shineapp.cars.system.observe
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.android.ContributesAndroidInjector
 import dagger.android.support.DaggerFragment
 import dagger.multibindings.IntoMap
 import javax.inject.Inject
+import javax.inject.Named
 
-class PagedListFragment: DaggerFragment() {
+class PagedListFragment : DaggerFragment() {
 
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
 
-    val viewModel: ListViewModel by lazyViewModel { viewModelFactory  }
+    val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
 
     var adapter: ListAdapter = ListAdapter()
 
     val listType: ListType by argumentDelegate()
+    val manufacturer: String? by argumentDelegate()
+    val year: String? by argumentDelegate()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_paged_list, container, false)
@@ -40,13 +44,13 @@ class PagedListFragment: DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        Lg.i{
+        Lg.i {
             "listType: $listType"
         }
 
         initRecyclerView(view)
-        with(viewModel){
-            observe(list){
+        with(viewModel) {
+            observe(list) {
                 adapter.submitList(it)
             }
         }
@@ -67,12 +71,34 @@ class PagedListFragment: DaggerFragment() {
 @Module
 interface PagedListModule {
 
-    @ContributesAndroidInjector(modules = [
-        ListViewModelModule::class
-    ])
+    @ContributesAndroidInjector(
+        modules = [
+            ListViewModelModule::class,
+            PagedListFragmentModule::class
+        ]
+    )
     fun contributesModule(): PagedListFragment
 
 }
+
+@Module
+class PagedListFragmentModule {
+
+    @Provides
+    fun providesListType(f: PagedListFragment) = f.listType
+
+
+    @Named("manufacturer")
+    @Provides
+    fun providesManufacturer(f: PagedListFragment): String? = f.manufacturer
+
+    @Named("year")
+    @Provides
+    fun providesYear(f: PagedListFragment): String? = f.year
+
+
+}
+
 @Module
 interface ListViewModelModule {
     @Binds

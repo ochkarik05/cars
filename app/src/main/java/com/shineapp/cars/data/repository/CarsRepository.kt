@@ -4,6 +4,6 @@ import com.shineapp.cars.data.model.Data
 
 interface CarsRepository{
     fun getManufacturers(): Listing<Data>
-    fun getModels(): Listing<Data>
-    fun getYears(): Listing<Data>
+    fun getModels(manufacturer: String): Listing<Data>
+    fun getYears(manufacturer: String, model: String): Listing<Data>
 }
