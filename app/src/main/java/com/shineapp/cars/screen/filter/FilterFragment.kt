@@ -1,6 +1,9 @@
 package com.shineapp.cars.screen.filter
 
 
+import android.content.Intent
+import android.content.Intent.ACTION_VIEW
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +17,11 @@ import com.shineapp.cars.di.viewmodel.ViewModelFactory
 import com.shineapp.cars.screen.ActivityViewModel
 import com.shineapp.cars.screen.EMPTY_DATA
 import com.shineapp.cars.screen.list.ListType
+import com.shineapp.cars.system.Lg
 import com.shineapp.cars.system.lazyActivityViewModel
 import com.shineapp.cars.system.observe
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_filter.*
 import kotlinx.android.synthetic.main.fragment_filter.view.*
 import javax.inject.Inject
 
@@ -25,7 +30,7 @@ class FilterFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
+    val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
         viewModelFactory
     }
 
@@ -51,6 +56,9 @@ class FilterFragment : DaggerFragment() {
             }
 
             observe(modelLiveData) {
+                Lg.i{
+                    "get value: $it"
+                }
                 view.yearLayout.isEnabled = it.isNotEmpty()
                 setText(view.modelLayout, it)
             }
@@ -59,6 +67,14 @@ class FilterFragment : DaggerFragment() {
                 setText(view.yearLayout, it)
                 view.submit.isEnabled = it.isNotEmpty()
             }
+
+            observe(openUri){ uri ->
+                startActivity(Intent(ACTION_VIEW).apply { data = uri })
+            }
+        }
+
+        submit.setOnClickListener {
+            activityViewModel.submitPressed()
         }
     }
 
@@ -84,9 +100,9 @@ class FilterFragment : DaggerFragment() {
             navTo(
                 FilterFragmentDirections
                     .actionShowList()
-                    .setManufacturer(activityViewModel.manufacturerLiveData.value?.id)
-                    .setModel(activityViewModel.modelLiveData.value?.id)
-                    .setYear(activityViewModel.yearLiveData.value?.id)
+                    .setManufacturer(activityViewModel.getManufacturer().id)
+                    .setModel(activityViewModel.getModel().id)
+                    .setYear(activityViewModel.getYear().id)
                     .setListType(listType)
             )
         }

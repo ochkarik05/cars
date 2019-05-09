@@ -43,7 +43,7 @@ class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataVi
 
         val prevSelectedItem = currentList!!.indexOfFirst { it.id == selectedItem }
         if (prevSelectedItem != -1) {
-            notifyItemChanged(clickedPos)
+            notifyItemChanged(prevSelectedItem)
         }
         val item = getItem(clickedPos)
         selectedItem = item?.id

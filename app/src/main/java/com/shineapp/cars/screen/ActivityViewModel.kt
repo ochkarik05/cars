@@ -1,9 +1,11 @@
 package com.shineapp.cars.screen
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.shineapp.cars.data.model.Data
 import com.shineapp.cars.system.AutoDisposableViewModel
+import com.shineapp.cars.system.SingleLiveEvent
 import com.shineapp.cars.system.mutable
 import javax.inject.Inject
 
@@ -14,6 +16,8 @@ class ActivityViewModel @Inject constructor(): AutoDisposableViewModel() {
     val manufacturerLiveData: LiveData<Data> = MutableLiveData()
     val modelLiveData: LiveData<Data> = MutableLiveData()
     val yearLiveData: LiveData<Data> = MutableLiveData()
+
+    val openUri: LiveData<Uri> = SingleLiveEvent<Uri>()
 
     init {
         setLiveData(manufacturerLiveData, EMPTY_DATA)
@@ -39,6 +43,17 @@ class ActivityViewModel @Inject constructor(): AutoDisposableViewModel() {
     private fun setLiveData(liveData:  LiveData<Data>, data: Data) {
         liveData.mutable.value  = data
     }
+
+    fun submitPressed(){
+        val manufacturer = getManufacturer().value
+        val model = getModel().value
+        val year = getYear().value
+        openUri.mutable.value = Uri.parse("https://www.google.com.ua/search?q=$manufacturer+$model+$year+buy+Berlin")
+    }
+
+    fun getYear() = yearLiveData.value!!
+    fun getModel() = modelLiveData.value!!
+    fun getManufacturer() = manufacturerLiveData.value!!
 
 }
 

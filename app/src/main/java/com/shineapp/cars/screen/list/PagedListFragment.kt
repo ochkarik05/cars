@@ -33,6 +33,11 @@ class PagedListFragment : DaggerFragment() {
     private val viewModel: ListViewModel by lazyViewModel { viewModelFactory }
     private val adapter: ListAdapter by lazy {
 
+        val function = Runnable {
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.pagedListFragment)
+                navController.popBackStack()
+        }
         ListAdapter { data ->
 
             val func = when (listType) {
@@ -42,9 +47,10 @@ class PagedListFragment : DaggerFragment() {
             }
             func(data)
 
-            view?.postDelayed({
-                findNavController().popBackStack()
-            }, 300)
+            view?.removeCallbacks(function)
+            //Wait to ripple animation finishes
+            view?.postDelayed(function, 400)
+
         }.apply {
             selectedItem = when (listType) {
                 ListType.MANUFACTURER -> manufacturer
