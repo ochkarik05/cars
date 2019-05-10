@@ -2,6 +2,8 @@ package com.shineapp.cars.di
 
 import com.shineapp.cars.App
 import com.shineapp.cars.MainActivityModule
+import com.shineapp.cars.data.repository.RepositoryModule
+import com.shineapp.cars.rest.RetrofitModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -15,7 +17,9 @@ import javax.inject.Singleton
     modules = [
         AndroidSupportInjectionModule::class,
         AppModule::class,
-        MainActivityModule::class
+        MainActivityModule::class,
+        RetrofitModule::class,
+        RepositoryModule::class
     ]
 )
 interface AppComponent : AndroidInjector<DaggerApplication> {

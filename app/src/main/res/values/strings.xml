@@ -3,4 +3,10 @@
     <string name="please_select_your_preferences">Please, select your preferences</string>
     <string name="find_me_a_car">Find me a car</string>
     <string name="manufacturer">Manufacturer</string>
+    <string name="search">Search</string>
+    <string name="error_unknown">Unknown Error</string>
+    <string name="network_error">Network Error</string>
+    <string name="server_error">Server Error</string>
+    <string name="model">Model</string>
+    <string name="year">Year</string>
 </resources>
