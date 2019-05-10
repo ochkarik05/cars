@@ -11,14 +11,14 @@ interface CarsApi{
     @GET("v1/car-types/manufacturer")
     fun getManufacturers(
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int
+        @Query("pageSize") pageSize: Int?
     ): Single<ServerResponse>
 
 
     @GET("v1/car-types/main-types")
     fun getModels(
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int,
+        @Query("pageSize") pageSize: Int?,
         @Query("manufacturer") manufacturer: String
     ): Single<ServerResponse>
 
@@ -26,7 +26,7 @@ interface CarsApi{
     @GET("v1/car-types/built-dates")
     fun getYears(
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int,
+        @Query("pageSize") pageSize: Int?,
         @Query("manufacturer") manufacturer: String,
         @Query("main-type") model: String
     ): Single<ServerResponse>

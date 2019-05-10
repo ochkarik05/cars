@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
 
 const val DEFAULT_PAGE_VALUE = 0
 
-class Response<T>(
+data class Response<T>(
     val data: List<T>,
     val page: Int,
     val pageSize: Int,
