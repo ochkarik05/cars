@@ -48,7 +48,7 @@ class ActivityViewModel @Inject constructor(): AutoDisposableViewModel() {
         val manufacturer = getManufacturer().value
         val model = getModel().value
         val year = getYear().value
-        openUri.mutable.value = Uri.parse("https://www.google.com.ua/search?q=$manufacturer+$model+$year+buy+Berlin")
+        openUri.mutable.value = Uri.parse("https://www.google.com.ua/search?q=Used+$manufacturer+$model+$year+for+sale+Berlin")
     }
 
     fun getYear() = yearLiveData.value!!

@@ -3,7 +3,6 @@ package com.shineapp.cars.screen.filter
 
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import com.shineapp.cars.di.viewmodel.ViewModelFactory
 import com.shineapp.cars.screen.ActivityViewModel
 import com.shineapp.cars.screen.EMPTY_DATA
 import com.shineapp.cars.screen.list.ListType
-import com.shineapp.cars.system.Lg
 import com.shineapp.cars.system.lazyActivityViewModel
 import com.shineapp.cars.system.observe
 import dagger.android.support.DaggerFragment
@@ -30,7 +28,7 @@ class FilterFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
+    private val activityViewModel by lazyActivityViewModel<ActivityViewModel> {
         viewModelFactory
     }
 
@@ -56,9 +54,6 @@ class FilterFragment : DaggerFragment() {
             }
 
             observe(modelLiveData) {
-                Lg.i{
-                    "get value: $it"
-                }
                 view.yearLayout.isEnabled = it.isNotEmpty()
                 setText(view.modelLayout, it)
             }
