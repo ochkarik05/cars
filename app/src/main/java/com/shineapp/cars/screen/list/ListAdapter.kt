@@ -13,14 +13,17 @@ import com.shineapp.cars.data.model.Data
 const val VIEW_TYPE_ODD = 0
 const val VIEW_TYPE_EVEN = 1
 
-class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataViewHolder>(DATA_COMPARATOR) {
+class ListAdapter(val onSelected: (Data) -> Unit) :
+    PagedListAdapter<Data, DataViewHolder>(DATA_COMPARATOR) {
 
     companion object {
-          val DATA_COMPARATOR = object : DiffUtil.ItemCallback<Data>() {
+        val DATA_COMPARATOR = object : DiffUtil.ItemCallback<Data>() {
 
-            override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean = oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean =
+                oldItem.id == newItem.id
 
-            override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean = oldItem == newItem
+            override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean =
+                oldItem == newItem
 
         }
     }
@@ -29,7 +32,7 @@ class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataVi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DataViewHolder {
 
-        val layoutId = when(viewType){
+        val layoutId = when (viewType) {
             VIEW_TYPE_EVEN -> R.layout.item_text_even
             VIEW_TYPE_ODD -> R.layout.item_text_odd
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
@@ -40,15 +43,24 @@ class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataVi
 
 
     private val onClick: (Int) -> Unit = { clickedPos ->
-
-        val prevSelectedItem = currentList!!.indexOfFirst { it.id == selectedItem }
-        if (prevSelectedItem != -1) {
-            notifyItemChanged(prevSelectedItem)
-        }
-        val item = getItem(clickedPos)
-        selectedItem = item?.id
+        notifyPreviousSelection()
         notifyItemChanged(clickedPos)
-        item?.let { onSelected(it) }
+        selectItem(clickedPos)
+    }
+
+    private fun selectItem(pos: Int) {
+        requireNotNull(getItem(pos)).also { item ->
+            selectedItem = item.id
+            onSelected(item)
+        }
+    }
+
+    private fun notifyPreviousSelection() {
+        currentList?.indexOfFirst { it.id == selectedItem }?.let { prevSelectedItem ->
+            if (prevSelectedItem != -1) {
+                notifyItemChanged(prevSelectedItem)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
@@ -60,9 +72,9 @@ class ListAdapter(val onSelected: (Data) -> Unit): PagedListAdapter<Data, DataVi
     }
 }
 
-open class DataViewHolder(val view: View): RecyclerView.ViewHolder(view){
+open class DataViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(data: Data, selectedItemId: String?, onClick: (Int) -> Unit){
+    fun bind(data: Data, selectedItemId: String?, onClick: (Int) -> Unit) {
 
         view.findViewById<TextView>(R.id.text).text = data.value
 
