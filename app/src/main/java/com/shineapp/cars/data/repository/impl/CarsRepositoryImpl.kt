@@ -9,15 +9,15 @@ import com.shineapp.cars.data.repository.api.CarsApi
 import com.shineapp.cars.data.repository.api.ServerResponse
 import com.shineapp.cars.data.repository.api.toResponse
 import io.reactivex.Single
+import java.util.*
 import javax.inject.Inject
 
 const val PAGE_SIZE = 15
-class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsRepository {
+class CarsRepositoryImpl @Inject constructor(private val carsApi: CarsApi) : CarsRepository {
 
-    private val cachedManufacturers = carsApi.getManufacturers(0,  null).cache()!!
+    private val cachedManufacturers = carsApi.getManufacturers(0,  null).cache()
     private val cachedModels = mutableMapOf<String, Single<ServerResponse>>()
     private val cachedYears = mutableMapOf<Pair<String, String>, Single<ServerResponse>>()
-
 
     override fun getManufacturers(filter: String?): Listing<Data> {
 
@@ -102,7 +102,7 @@ class CarsRepositoryImpl @Inject constructor(val carsApi: CarsApi) : CarsReposit
 
 fun Single<ServerResponse>.filterValues(filter: String) = map { it.toResponse() }
 .map { response ->
-    response.copy( data = response.data.filter { it.value.toLowerCase().contains(filter) })
+    response.copy( data = response.data.filter { it.value.toLowerCase(Locale.getDefault()).contains(filter) })
 }
 
 open class CarRequestFactory<T: DataSource<Int, Data>>(

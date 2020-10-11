@@ -35,8 +35,11 @@ class ListViewModel @Inject constructor(
 
         val listing = when(listType){
             ListType.MANUFACTURER -> carsRepository.getManufacturers()
-            ListType.MODEL -> carsRepository.getModels(manufacturer!!)
-            ListType.YEAR -> carsRepository.getYears(manufacturer!!, model!!)
+            ListType.MODEL -> carsRepository.getModels(requireNotNull(manufacturer))
+            ListType.YEAR -> carsRepository.getYears(
+                requireNotNull(manufacturer),
+                requireNotNull(model)
+            )
         }
 
 

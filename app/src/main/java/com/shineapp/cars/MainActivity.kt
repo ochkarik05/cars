@@ -15,7 +15,6 @@ class MainActivity: DaggerAppCompatActivity(){
         setContentView(R.layout.activity_main_layout)
         setSupportActionBar(toolbar)
         val navController = findNavController(R.id.main_host_fragment)
-//        setupActionBarWithNavController(navController)
         setupWithNavController(toolbar, navController)
     }
 }

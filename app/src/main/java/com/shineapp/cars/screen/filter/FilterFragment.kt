@@ -66,6 +66,10 @@ class FilterFragment : DaggerFragment() {
             observe(openUri){ uri ->
                 startActivity(Intent(ACTION_VIEW).apply { data = uri })
             }
+
+            observe(navWithArguments){ actionShowList ->
+                navTo(actionShowList)
+            }
         }
 
         submit.setOnClickListener {
@@ -92,14 +96,7 @@ class FilterFragment : DaggerFragment() {
         val hint = layout.findViewById<TextView>(R.id.hint)
         hint.setText(hintId)
         layout.setOnClickListener {
-            navTo(
-                FilterFragmentDirections
-                    .actionShowList()
-                    .setManufacturer(activityViewModel.getManufacturer().id)
-                    .setModel(activityViewModel.getModel().id)
-                    .setYear(activityViewModel.getYear().id)
-                    .setListType(listType)
-            )
+            activityViewModel.layoutPressed(listType)
         }
     }
 

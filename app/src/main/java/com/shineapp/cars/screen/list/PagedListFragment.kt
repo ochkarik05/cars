@@ -113,7 +113,7 @@ class PagedListFragment : DaggerFragment() {
     private fun initRecyclerView(view: View) {
         view.findViewById<RecyclerView>(R.id.recyclerView).apply {
             adapter = this@PagedListFragment.adapter
-            layoutManager = LinearLayoutManager(context!!)
+            layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
